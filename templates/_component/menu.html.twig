@@ -1,0 +1,20 @@
+{% set current_route = app.current_route %}
+
+<div id="menu">
+    <h3 id="menu-titre">Bricount</h3>
+
+    <ul>
+        <li class="lien-menu">
+            <a href="{{ path("wallets_list") }}" class="{% if "wallet" in current_route %} active {% endif %}">Portefeuille</a>
+        </li>
+        <li class="lien-menu">
+            <a href="{{ path("settings") }}"
+               class="{% if "settings" in current_route %} active {% endif %}">Paramètres</a>
+        </li>
+        <li class="lien-menu">
+            <a href="{{ path("app_logout") }}"
+               class="{% if "logout" in current_route %} active {% endif %}">Déconnexion</a>
+        </li>
+    </ul>
+
+</div>

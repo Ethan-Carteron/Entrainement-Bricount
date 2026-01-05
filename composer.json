@@ -9,6 +9,10 @@
         "php": ">=8.3.29",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/dbal": "^3",
+        "doctrine/doctrine-bundle": "^2.18",
+        "doctrine/doctrine-migrations-bundle": "^3.7",
+        "doctrine/orm": "^3.6",
         "runtime/frankenphp-symfony": "^1.0",
         "symfony/asset": "7.4.*",
         "symfony/asset-mapper": "7.4.*",
@@ -29,7 +33,10 @@
             "symfony/runtime": true
         },
         "bump-after-update": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "8.3.28"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -76,6 +83,8 @@
     },
     "require-dev": {
         "jolicode/gif-exception-bundle": "^1.9",
-        "symfony/maker-bundle": "^1.65"
+        "symfony/maker-bundle": "^1.65",
+        "symfony/stopwatch": "7.4.*",
+        "symfony/web-profiler-bundle": "7.4.*"
     }
 }
