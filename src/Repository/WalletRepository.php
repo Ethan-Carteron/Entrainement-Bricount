@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Wallet;
+use App\Entity\XUserWallet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -30,14 +32,14 @@ class WalletRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
+    public function findWalletsForUser(User $user): array
+    {
+        $query = $this
+            ->createQueryBuilder('w')
+            ->innerJoin(XUserWallet::class, 'xuw', 'WITH', 'xuw.wallet = w AND xuw.is_deleted = false AND xuw.target_user_id = :user')
+            ->andWhere('wallet.is_deleted = false')
+            ->setParameter('user', $user);
 
-    //    public function findOneBySomeField($value): ?Wallet
-    //    {
-    //        return $this->createQueryBuilder('w')
-    //            ->andWhere('w.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $query->getQuery()->getResult();
+    }
 }

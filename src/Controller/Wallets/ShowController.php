@@ -11,7 +11,7 @@ final class ShowController extends AbstractController
     #[Route('/wallets/{id}', name: 'wallets_show', methods: ['GET'])]
     public function index(
         string $id
-    ): Response
+    ): response
     {
         return $this->render('wallets/show/index.html.twig', [
             'controller_name' => 'Wallets/ShowController',

@@ -5,13 +5,14 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,11 +28,14 @@ class User implements UserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
+    private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $password = null;
+    private ?string $name = null;
 
     public function getId(): ?int
     {
@@ -57,7 +61,7 @@ class User implements UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -82,6 +86,32 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
+     */
+    public function __serialize(): array
+    {
+        $data = (array)$this;
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
+
+        return $data;
+    }
+
     #[\Deprecated]
     public function eraseCredentials(): void
     {
@@ -96,18 +126,6 @@ class User implements UserInterface
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
 
         return $this;
     }
